@@ -53,7 +53,8 @@
       "targets": "all",
       "identifier": "sigma.bussinga",
       "icon": [
-        "icon.png"
+        "icon.png",
+        "icon.ico"
       ],
       "windows": {
         "webviewInstallMode": {

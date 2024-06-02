@@ -85,6 +85,7 @@ class dnsLooker {
   lookup(siteName, tld){
     return new Promise((resolve, reject)=>{
       ffetch(`${this.url}/${siteName}/${tld}`).then((r)=>{
+        console.log(r)
         switch(r.status){
           case 200:
             resolve(r.data)
@@ -142,17 +143,17 @@ class site {
     if(selectedTab == this.tabID) document.querySelector(`#search`).value = url;
 
     // Get info about the domain
-    this.urlParsed = new URL(url)
-    this.tld = this.urlParsed.host.split(".")[this.urlParsed.host.split(".").length - 1];
-    this.siteName = this.urlParsed.host.split(".")[0];
-    this.protocol = this.urlParsed.protocol;
+    this.urlParsed = new URI(url)
+    this.tld = this.urlParsed.tld();
+    this.siteName = this.urlParsed.domain().split(".").slice(0,-1).join(".");
+    this.protocol = this.urlParsed.protocol();
 
     // Init page
     this.doc = this.iframe.contentWindow.document;
     this.doc.open();
 
     // Init LUA
-    this.lua = new luaEngine(this.iframe, url, Object.fromEntries(this.urlParsed.searchParams))
+    this.lua = new luaEngine(this.iframe, url, Object.fromEntries(new URLSearchParams(this.urlParsed.search())))
 
     // after DNS lookup
     let finishUp = ()=>{
@@ -194,7 +195,7 @@ class site {
         padding-top: 12px;
         padding-bottom: 12px;
       }
-      select{
+      select, option{
         color:${themeConfig["text2"]};
         margin: 0;
         padding-top: 8px;
@@ -239,7 +240,7 @@ class site {
       this.doc.write(`<style>
         body{
             margin: 34px;
-            font-family: "Monospace";
+            overflow: hidden;
         }
     </style>
     <title>Error</title>
@@ -328,8 +329,9 @@ class site {
 window.site = site;
 
 let dnsProviders = {
-  "bussinga:": {
+  "bussinga": {
     lookup: (url, tld)=>{
+      console.log(url, tld)
       return new Promise((res,rej)=>{
         if(tld != "bang" || !["welcome"].includes(url)) rej();
         res({
@@ -338,7 +340,7 @@ let dnsProviders = {
       })
     }
   },
-  "localhost:": {
+  "localhost": {
     lookup: (url, tld)=>{
       return new Promise((res,rej)=>{
         res({
@@ -347,18 +349,20 @@ let dnsProviders = {
       })
     }
   },
-  "buss:": new dnsLooker(localStorage.getItem(`dns`))
+  "buss": new dnsLooker(localStorage.getItem(`dns`))
 }
 window.dnsProviders = dnsProviders;
 
 window.domains = {
   lookup: (url, tld, protocol)=>{
+    console.log(protocol)
     return new Promise((res, rej)=>{
       if(window.dnsCache[`${url}|.|${tld}|.|${protocol}`]){
         res(window.dnsCache[`${url}|.|${tld}|.|${protocol}`]);
       }
 
       if(dnsProviders[protocol]){
+        console.log(url, tld, "AAA")
         dnsProviders[protocol].lookup(url, tld).then((r)=>{
           window.dnsCache[`${url}|.|${tld}|.|${protocol}`] = r;
           res(r)
