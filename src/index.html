@@ -1,0 +1,134 @@
+<html>
+  <head>
+    <title>bussinga</title>
+
+    <meta name="referrer" content="no-referrer">
+
+    <link rel="stylesheet" href="./styles.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.5/purify.min.js" integrity="sha512-JatFEe90fJU2nrgf27fUz2hWRvdYrSlTEV8esFuqCtfiqWN8phkS1fUl/xCfYyrLDQcNf3YyS0V9hG7U4RHNmQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/wasmoon@latest/dist/index.min.js"></script>
+
+    <script>
+      let setImmediate = (f)=>{
+        setTimeout(f, 0)
+      }
+      window.setImmediate = setImmediate;
+      var CSSJSON=new function(){var h=this;h.init=function(){String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g,"")},String.prototype.repeat=function(t){return new Array(1+t).join(this)}},h.init();var b=/\/\*[\s\S]*?\*\//g,g=/([^\:]+):([^\;]*);/,y=/(\/\*[\s\S]*?\*\/)|([^\s\;\{\}][^\;\{\}]*(?=\{))|(\})|([^\;\{\}]+\;(?!\s*\*\/))/gim,C=function(t){return void 0===t||0==t.length||null==t};h.toJSON=function(t,r){var e={children:{},attributes:{}},n=null,a=0;if(void 0===r)r={ordered:!1,comments:!1,stripComments:!1,split:!1};for(r.stripComments&&(r.comments=!1,t=t.replace(b,""));null!=(n=y.exec(t));)if(!C(n[1])&&r.comments){var s=n[1].trim();e[a++]=s}else if(C(n[2])){if(!C(n[3]))return e;if(!C(n[4])){var o=n[4].trim(),u=g.exec(o);if(u){c=u[1].trim();var l=u[2].trim();if(r.ordered)(m={}).name=c,m.value=l,m.type="attr",e[a++]=m;else if(c in e.attributes){var f=e.attributes[c];f instanceof Array||(e.attributes[c]=[f]),e.attributes[c].push(l)}else e.attributes[c]=l}else e[a++]=o}}else{var c=n[2].trim(),v=h.toJSON(t,r);if(r.ordered){var m;(m={}).name=c,m.value=v,m.type="rule",e[a++]=m}else{if(r.split)var p=c.split(",");else p=[c];for(i in p){var d=p[i].trim();if(d in e.children)for(var S in v.attributes)e.children[d].attributes[S]=v.attributes[S];else e.children[d]=v}}}return e},h.toCSS=function(t,r,e){var n="";if(void 0===r&&(r=0),void 0===e&&(e=!1),t.attributes)for(i in t.attributes){var a=t.attributes[i];if(a instanceof Array)for(var s=0;s<a.length;s++)n+=u(i,a[s],r);else n+=u(i,a,r)}if(t.children){var o=!0;for(i in t.children)e&&!o?n+="\n":o=!1,n+=l(i,t.children[i],r)}return n};var u=function(t,r,e){return"\t".repeat(e)+t+": "+r+";\n"},l=function(t,r,e){var i="\t".repeat(e)+t+" {\n";return i+=h.toCSS(r,e+1),i+="\t".repeat(e)+"}\n"}};
+    
+      window.themes = {
+          "classic": {
+              "titlebar": "#313130",
+              "tab": "#424242",
+              "highlight": "#656565",
+              "button": "#393838",
+              "background": "#252524",
+              "text1": "white",
+              "text2": "black",
+              "font": "Noto Sans",
+              "link": "#50889b",
+              "searchBar": "#424242"
+          },
+          "classicLight": {
+              "titlebar": "#F5F5F5",
+              "tab": "#E0E0E0",
+              "highlight": "#D0D0D0",
+              "button": "#ECECEC",
+              "background": "#FFFFFF",
+              "text1": "black",
+              "text2": "#606060",
+              "font": "Noto Sans",
+              "link": "#007BFF",
+              "searchBar": "#E0E0E0"
+          },
+          "midnight": {
+              "titlebar": "#222222",
+              "tab": "#333333",
+              "highlight": "#444444",
+              "button": "#2C2C2C",
+              "background": "#181818",
+              "text1": "white",
+              "text2": "black",
+              "font": "Noto Sans",
+              "link": "#00BFFF",
+              "searchBar": "#333333"
+          },
+          "discord": {
+              "titlebar": "#212224",
+              "tab": "#2e3036",
+              "highlight": "#72777c",
+              "button": "#f4f4f5",
+              "background": "#34383e",
+              "text1": "white",
+              "text2": "black",
+              "font": "Noto Sans",
+              "link": "#285ee9",
+              "searchBar": "#2e3036"
+          },
+          "catgirl": {
+              "titlebar": "#7469B6",
+              "tab": "#AD88C6",
+              "highlight": "#FFE6E6",
+              "button": "#E1AFD1",
+              "background": "#AD88C6",
+              "text1": "black",
+              "text2": "black",
+              "font": "Varela Round",
+              "link": "#7469B6",
+              "searchBar": "#AD88C6"
+          },
+          "blu": {
+              "titlebar": "#240750",
+              "tab": "#344C64",
+              "highlight": "#57A6A1",
+              "button": "#577B8D",
+              "background": "#344C64",
+              "text1": "white",
+              "text2": "black",
+              "font": "Noto Sans",
+              "link": "#57A6A1",
+              "searchBar": "#344C64"
+          }
+      }
+    </script>
+    <script src="./htmlppparser.js"></script>
+    <script src="./cssppparser.js"></script>
+    <script src="./lua.js"></script>
+    <script src="./ui.js" defer></script>
+    <script type="module" src="/main.js" defer></script>
+  </head>
+
+  <body>
+    <div data-tauri-drag-region="" class="titlebar">
+      <div class="leftActions" data-tauri-drag-region="">
+        <div class="newTab">
+          <i class='bx bx-plus'></i>
+        </div>
+        <div class="tab selected">
+          <div class="image" style="background-image: url(./bazinga.jpg);"></div>
+          <p>dingle.it</p>
+        </div>
+      </div>
+
+      <div class="rightActions" data-tauri-drag-region="">
+        <div class="titlebar-button" id="titlebar-minimize">
+          <i class="bx bx-minus"></i>
+        </div>
+        <div class="titlebar-button" id="titlebar-maximize">
+          <i class="bx bx-fullscreen" id="fullScreenIcon"></i>
+        </div>
+        <div class="titlebar-button" id="titlebar-close">
+          <i class="bx bx-x"></i>
+        </div>
+      </div>
+    </div>
+
+    <div id="searchBar">
+      <input type="text" id="search" value="buss://">
+    </div>
+
+    <div id="contents">
+    </div>
+  </body>
+</html>

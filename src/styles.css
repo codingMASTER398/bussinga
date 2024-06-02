@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Varela+Round&display=swap');
+
+body{
+  background-color: transparent;
+  margin: 0;
+  color: var(--text1);
+  font-family: var(--font);
+}
+
+.titlebar {
+  height: 30px;
+  background: var(--titlebar);
+  user-select: none;
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+.titlebar-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 3px;
+}
+.titlebar-button:hover {
+  background: var(--highlight);
+}
+.titlebar .rightActions{
+  background-color: var(--tab);
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+
+  cursor: pointer;
+}
+.titlebar .leftActions{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% - 100px);
+  height: 30px;
+  
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 3px;
+}
+.tab, .newTab{
+  position: relative;
+  width: 100%;
+  max-width: 200px;
+  background-color: var(--tab);
+  height: 30px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  box-shadow: 6px 0 3px rgba(0,0,0,0.1);
+
+  display: flex;
+  
+  align-items: center;
+  box-sizing: border-box;
+  padding-left: 8px;
+  padding-right: 8px;
+
+  font-family: var(--font);
+  font-weight: 300;
+  font-size: small;
+
+  gap: 8px;
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+.tab.selected{
+  background-color: var(--highlight);
+}
+.tab button{
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(0, -50%);
+  aspect-ratio: 1/1;
+  height: 100%;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--tab);
+  border: none;
+
+  color: var(--text1);
+  border-top-right-radius: 3px;
+  opacity: 0;
+  transition: 0.1s;
+  cursor: pointer;
+}
+.tab:hover button{
+  opacity: 1;
+  transition: 0.1s;
+}
+.newTab{
+  max-width: 30px;
+}
+.tab p{
+  background-color: transparent;
+}
+.tab .image{
+  height: 70%;
+  aspect-ratio: 1/1;
+  
+  background-size: contain;
+  background-position: center;
+  border-radius: 2px;
+}
+
+#searchBar{
+  position: absolute;
+  top: 30px;
+  width: 100%;
+  height: 30px;
+
+  background: var(--searchBar);
+  box-shadow: 0 -5px 5px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+
+  box-sizing: border-box;
+  padding-left: 8px;
+  padding-right: 8px;
+
+  z-index: 999;
+}
+#searchBar input{
+  width: 70%;
+  background-color: transparent;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
+  border: none;
+  height: 80%;
+  border-radius: 3px;
+  outline: none;
+  box-sizing: border-box;
+  padding-left: 12px;
+  color: var(--text1);
+  font-weight: 300;
+}
+
+#contents{
+  position: absolute;
+  width: 100vw;
+  height: calc(100vh - 60px);
+  background-color: white;
+
+  top: 60px;
+  background: var(--titlebar);
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+#contents iframe{
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: none;
+}
