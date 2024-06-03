@@ -371,8 +371,8 @@ let dnsProviders = {
       return new Promise((res,rej)=>{
         if(tld != "bang" || !["settings"].includes(url)) rej();
         res({
-          //ip: `https://bussingah.pages.dev/${url}.html`,
-          ip: `http://127.0.0.1:1430/internalPages/${url}.html`
+          ip: `https://bussingah.pages.dev/${url}.html`,
+          //ip: `http://127.0.0.1:1430/internalPages/${url}.html`
         })
       })
     }

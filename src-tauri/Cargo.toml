@@ -1,8 +1,8 @@
 [package]
-name = "buzzr"
-version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
+name = "bussinga"
+version = "0.0.1"
+description = "better than napture"
+authors = ["coding398"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
