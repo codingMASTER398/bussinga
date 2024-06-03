@@ -2,9 +2,12 @@
 // real
 
 async function parseHTMLPP(html, url, port){
+    // strip HTML comments because they fuck with the system
+    html = html.replaceAll(/(?=<!--)([\s\S]*?)-->/g, "")
+
     // first, we crawl for war crimes;
 
-    if(url.startsWith(`http://127.0.0.1`)) url = url.replace("http://127.0.0.1", "http://127.0.0.1:" + port)
+    //if(url.startsWith(`http://127.0.0.1`)) url = url.replace("http://127.0.0.1", "http://127.0.0.1:" + port)
 
     const goofy = ["meta", "link", "img", "input"];
     /*let lua = [`
@@ -150,7 +153,7 @@ print(cards)`]*/
                 continue;
             }else if(e == `<`){
                 html[i] = `!${e}!`
-                throw new Error(`You did war crime (< tag <), ${html.join("")}`)
+                throw new Error(`You did war crime (< tag <). So, like, your HTML is fucked man. Anyway, try to spot where the parser went wrong, we put some little exclamation marks around the war crime. have fun!!! ${html.join("")}`)
             }
 
             if(!sigma) continue;

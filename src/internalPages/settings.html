@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>bussinga!</title>
+        <link href="index.css">
+        <script src="index.lua"></script>
+    </head>
+    <body>
+        <img src="https://64.media.tumblr.com/3ed2fa36e8a6616c264ab9a2aeeb433b/tumblr_inline_p0xdankMqB1qmcu44_540.png">
+        <h1 class="bussinga">Bussinga!</h1>
+        <hr>
+        <br>
+        <p>A <b>WebX</b> browser for everyone!</p>
+        <p>Bussinga is the next level up from Napture- built on Tauri and wasmoon, with tons of amazing new features!</p>
+        <ul>
+            <li>Tabs!</li>
+            <li>Custom DNS!</li>
+            <li>DNS Caching!</li>
+            <li>Themes!</li>
+            <li>Mostly backwards compatibile with Napture HTML, CSS & Lua!</li>
+        </ul>
+        <p>This is a weekend project, and will probably be abandoned at some point, but is currently still under development :thumbsup:</p>
+        <br>
+        <b>Still to come:</b>
+        <ul>
+            <li>Developer tools</li>
+            <li>More than 1 page (index.html) per domain. Not a priority as Napture doesn't support it yet.</li>
+            <li>More compatibility, especially pages that rely on fetch(). Sites like chat.it and dingle.it work, though!</li>
+        </ul>
+
+        <br>
+        <h2>Settings</h2>
+        <hr>
+        <br>
+        <p>Theme: (browser pages will refresh)</p>
+        <select class="theme">
+            <option value="classic">classic dark</option>
+            <option value="classicLight">light</option>
+            <option value="midnight">midnight</option>
+            <option value="discord">discord</option>
+            <option value="catgirl">catgirl</option>
+            <option value="blu">blu</option>
+            <option value="hacker">hacker</option>
+            <option value="chill">popsicle</option>
+            <option value="volcano">volcano</option>
+        </select>
+        <br><br>
+
+        <!-- Homepage -->
+        <p>New tab page:</p>
+        <input type="text" class="newTabPage">
+        <p class="newTabPageOK"></p>
+
+        <!-- Custom DNS -->
+        <br>
+        <p>Custom DNS:
+            <br><i>Currently, this only changes it for buss://, more options coming soon :tm:</i>
+        </p>
+        <input type="text" class="dns">
+        <p class="dnsOK"></p>
+        <br>
+
+        <!-- flush DNS -->
+        <button class="dnsFlush">Flush DNS cache</button>
+
+        <!-- Notes for devs -->
+        <br>
+        <br>
+        <h2>Notes for devs</h2>
+        <hr>
+        <br>
+        <p><b>IMPORTANT:</b> Currently, if your app listens to a click or input event and calls "fetch" within that, please do not update any variables before you fetch! The current workaround to get the API to work involves running the function more than one, and this leads to recursion. I'm looking into a method to fix this, but for now, please update your sites.</p>
+        <br>
+        <p>Check for the bussinga browser with window.browser being set to "bussinga", or the user agent being "bussinga (like Napture)".</p>
+        <p>To take full advantage of CSS without any editing for compatibility, put "/* bussinga! */" anywhere in your CSS code. Base CSS styles will still be applied.</p>
+        <br>
+        <p>To test your local project, go to localhost://3000 or whatever port you're serving from.</p>
+        <br><br>
+    </body>
+</html>

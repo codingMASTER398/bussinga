@@ -3,8 +3,6 @@ body{
     overflow: auto;
     box-sizing: border-box;
     padding-top: 48px;
-    padding-bottom: 48px;
-    overflow-x: hidden;
 }
 hr{
     width: 100px;
@@ -16,4 +14,8 @@ input{
 theme{
     max-width: 400px;
     width: 50%;
+}
+
+img{
+    width: 200px;
 }

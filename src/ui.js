@@ -44,7 +44,8 @@ function uiRefresh(){
     })
 
     document.querySelector(`.newTab`).addEventListener("click", ()=>{
-        new site("")
+        selectedTab = window.currentTabID + 1;
+        new site(localStorage.getItem(`newTabPage`));
     })
 
     if(!tabIsSelected){
@@ -53,7 +54,7 @@ function uiRefresh(){
             let sel = [...document.querySelectorAll(`iframe`)].find((t)=>t.getAttribute(`tabID`) == selectedTab);
             document.querySelector(`#search`).value = sel.getAttribute("location")
         }
-        else new site("bussinga://welcome.bang");
+        else new site("bussinga://settings.bang");
         uiRefresh();
     }
 }
@@ -65,4 +66,14 @@ document.querySelector(`#search`).addEventListener('keydown',(e)=>{
         if(!val.includes("://")) val = "buss://" + val;
         sel.c.navigate(val)
     }
+})
+
+function refreshCurrentSite(){
+    let sel = [...document.querySelectorAll(`iframe`)].find((t)=>t.getAttribute(`tabID`) == window.selectedTab);
+    sel.c.refresh();
+}
+document.querySelector(`#refreshPage`).addEventListener(`click`, refreshCurrentSite)
+document.querySelector(`#settings`).addEventListener(`click`, ()=>{
+    selectedTab = window.currentTabID + 1;
+    new site(`bussinga://settings.bang`);
 })

@@ -42,7 +42,7 @@ body{
   position: absolute;
   top: 0;
   left: 0;
-  width: calc(100% - 100px);
+  width: calc(100% - 130px);
   height: 30px;
   
   display: flex;
@@ -111,6 +111,7 @@ body{
 }
 .tab p{
   background-color: transparent;
+  box-shadow: none;
 }
 .tab .image{
   height: 70%;
@@ -131,25 +132,28 @@ body{
   box-shadow: 0 -5px 5px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
+  gap: 3px;
 
   box-sizing: border-box;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding-left: 6px;
+  padding-right: 6px;
 
   z-index: 999;
 }
 #searchBar input{
   width: 70%;
+  box-sizing: border-box;
+  padding-left: 12px;
+  font-weight: 300;
+}
+#searchBar input, #searchBar button{
   background-color: transparent;
   box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
   border: none;
   height: 80%;
   border-radius: 3px;
   outline: none;
-  box-sizing: border-box;
-  padding-left: 12px;
   color: var(--text1);
-  font-weight: 300;
 }
 
 #contents{
@@ -168,4 +172,8 @@ body{
   height: 100%;
   margin: 0;
   border: none;
+}
+
+button{
+  cursor: pointer;
 }

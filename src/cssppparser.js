@@ -24,9 +24,16 @@ function parseCSSPP(p){
             })){
                 a[key].attributes["display"] = "flex"
             }else{
-                a[key].attributes["height"] = "fit-content"
+                //a[key].attributes["width"] = "fit-content"
                 //a[key].attributes["display"] = "inline-block"
             }
+
+            let halveAttribs = ["padding","padding-left","padding-right","padding-top","padding-bottom", "margin", "margin-left", "margin-right", "margin-top", "margin-bottom"]
+            halveAttribs.forEach((h)=>{
+                if(a[key].attributes[h] && !isNaN(Number(a[key].attributes[h].replace("px", "")))){
+                    a[key].attributes[h] = (Number(a[key].attributes[h].replace("px", "")) / 2) + "px"
+                }
+            })
 
             if(!isNaN(Number(a[key].attributes["gap"]))) a[key].attributes["gap"] += "px"
             a[key].attributes["margin"] ??= "3px"

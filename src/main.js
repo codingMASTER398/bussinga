@@ -3,6 +3,7 @@ let THEME;
 window.dnsCache = {}
 
 if(!localStorage.getItem(`dns`)) localStorage.setItem(`dns`, `https://api.buss.lol/domain`);
+if(!localStorage.getItem(`newTabPage`)) localStorage.setItem(`newTabPage`, `buss://dingle.it`);
 
 // Init window whatever
 const appWindow = __TAURI__.window.appWindow,
@@ -74,7 +75,18 @@ function traverse(o,func) {
   }
 }
 
-let currentTabID = 0;
+function preDomainCache(){
+  return; // at the time of writing, https://api.buss.lol/domains is down, so I can't make this feature
+
+  ffetch(new URI(localStorage.getItem(`dns`) + `/../domains`).normalize().toString()).then((r)=>{
+    console.log(r)
+  })
+}
+
+preDomainCache();
+
+window.preDomainCache = preDomainCache;
+window.currentTabID = 0;
 window.tabs = []
 
 class dnsLooker {
@@ -131,9 +143,12 @@ class site {
 
     document.querySelector(`#contents`).appendChild(this.iframe);
 
+    this.navigateID = 0;
     this.navigate(url);
   }
   navigate(url){
+    let thisNavigateID = ++this.navigateID;
+
     this.iframe.contentWindow.document.close();
     this.iframe.setAttribute(`title`, "bussinga!")
     this.iframe.setAttribute(`image`, "")
@@ -141,6 +156,8 @@ class site {
 
     uiRefresh();
     if(selectedTab == this.tabID) document.querySelector(`#search`).value = url;
+
+    if(!url) return;
 
     // Get info about the domain
     this.urlParsed = new URI(url)
@@ -162,17 +179,21 @@ class site {
       let injected = `
       /* injected by bussinga */
       @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Varela+Round&display=swap');
+      *{box-sizing: border-box;}
+      .query{height:fit-content !important}
       body{
         width:100vw;
         height:100vh;
         font-family: ${themeConfig["font"]};
+        padding: 12px;
+        margin: 0 !important;
       }
       img{
         width: fit-content;
       }
       *{flex-shrink:0;}
       hr{
-        width:100%;
+        width: 100%;
       } 
       h1,h2,h3,h4,h5,h6,p,a{
         margin: 3px;
@@ -237,16 +258,22 @@ class site {
     }
 
     let showError = (e)=>{
+      if(this.navigateID != thisNavigateID) return;
+
       this.doc.write(`<style>
         body{
-            margin: 34px;
-            overflow: hidden;
+            padding: 32px;
         }
     </style>
     <title>Error</title>
     
     <h1>${e.title}</h1>
-    <p>${e.text}</p>`)
+    <p>${String(e.text).replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;')}</p>`)
+
       finishUp();
       uiRefresh();
     }
@@ -284,6 +311,8 @@ class site {
         method: "GET",
         responseType: http.ResponseType.Text
       }).then(async (r)=>{
+        if(this.navigateID != thisNavigateID) return;
+
         if(String(r.status).startsWith(`5`)){
           showError({
             title: `Website error`,
@@ -292,22 +321,29 @@ class site {
           return;
         }
         
-        console.log(`Website fetch done`)
-        let parsedIP = new URL(IP),
-          parsed = await parseHTMLPP(r.data, parsedIP.protocol + "//" + parsedIP.hostname + parsedIP.pathname + "/", parsedIP.port);
-        
-        this.doc.write(parsed.html)
+        console.log(`Website fetch done...`)
+        try{
+          let parsedIP = new URI(IP + "/"),
+            parsed = await parseHTMLPP(r.data, parsedIP.setSearch("").normalize().toString(), parsedIP.port());
+          
+          this.doc.write(parsed.html)
 
-        this.iframe.setAttribute(`title`, parsed.title)
-        this.iframe.setAttribute(`image`, parsed.icon)
+          this.iframe.setAttribute(`title`, parsed.title)
+          this.iframe.setAttribute(`image`, parsed.icon)
 
-        finishUp();
+          finishUp();
 
-        parsed.lua.forEach((l)=>{
-          this.lua.run(l)
-        })
+          parsed.lua.forEach((l)=>{
+            this.lua.run(l)
+          })
 
-        uiRefresh();
+          uiRefresh();
+        }catch(e){
+          showError({
+            title: "HTML parsing error",
+            text: e
+          })
+        }
       })
     })()
   }
@@ -333,9 +369,10 @@ let dnsProviders = {
     lookup: (url, tld)=>{
       console.log(url, tld)
       return new Promise((res,rej)=>{
-        if(tld != "bang" || !["welcome"].includes(url)) rej();
+        if(tld != "bang" || !["settings"].includes(url)) rej();
         res({
-          ip: `https://bussingah.pages.dev/${url}.html`
+          //ip: `https://bussingah.pages.dev/${url}.html`,
+          ip: `http://127.0.0.1:1430/internalPages/${url}.html`
         })
       })
     }
@@ -355,14 +392,14 @@ window.dnsProviders = dnsProviders;
 
 window.domains = {
   lookup: (url, tld, protocol)=>{
-    console.log(protocol)
+    if(!isNaN(Number(tld)) && protocol == "localhost") url = tld;
+
     return new Promise((res, rej)=>{
       if(window.dnsCache[`${url}|.|${tld}|.|${protocol}`]){
         res(window.dnsCache[`${url}|.|${tld}|.|${protocol}`]);
       }
 
       if(dnsProviders[protocol]){
-        console.log(url, tld, "AAA")
         dnsProviders[protocol].lookup(url, tld).then((r)=>{
           window.dnsCache[`${url}|.|${tld}|.|${protocol}`] = r;
           res(r)

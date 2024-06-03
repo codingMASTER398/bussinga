@@ -1,10 +1,22 @@
 const factory = new wasmoon.LuaFactory()
 
+function isJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
 class luaEngine {
     constructor(frame, loc, q){
         const doc = frame.contentWindow.document
 
-        factory.createEngine().then((r)=>{
+        factory.createEngine({
+            injectObjects: true,
+            traceAllocations: true
+        }).then((r)=>{
             this.lua = r;
             const lua = this.lua;
 
@@ -20,6 +32,10 @@ class luaEngine {
                     set_dns: (t)=>{
                         localStorage.setItem(`dns`, t)
                         window.dnsProviders["buss:"] = new window.dnsLooker(t)
+                        window.preDomainCache()
+                    },
+                    set_newtab: (t)=>{
+                        localStorage.setItem(`newTabPage`, t)
                     },
                     flush_dns: ()=>{
                         window.dnsCache = {}
@@ -51,7 +67,7 @@ class luaEngine {
                     func(params)
                 }catch(e){
                     if(String(e).includes(`C-call boundary`)){
-                        console.log(`Workarounding...`)
+                        console.log(`Workarounding... !! IF THIS LOOPS, YOU'VE HIT AN EDGE CASE. Please fetch your data at the start of the function, or outside of an on_click/on_* event.`)
                         await waitUntilCacheStored()
                         console.log("Cache ready")
                         doSneaky(func, params)
@@ -91,11 +107,9 @@ class luaEngine {
                         return c.className || c.tagName
                     },
                     set_content: (text)=>{
-                        console.log(text)
                         c.innerHTML = text
                     },
                     set_contents: (text)=>{
-                        console.log(text)
                         c.innerHTML = text
                     },
                     set_source: (src)=>{
@@ -120,13 +134,16 @@ class luaEngine {
                             //await lua.global.get("async")(f)(c.value || c.checked)
                             doSneaky(f, c.value || c.checked)
                         })
-                        c.addEventListener(`change`, async()=>{
+                        c.addEventListener(`keyup`, async(e)=>{
                             //await lua.global.get("async")(f)(c.value || c.checked)
-                            doSneaky(f, c.value || c.checked)
+                            if(e.key == "Enter") doSneaky(f, c.value || c.checked)
                         })
                     },
                     on_input: (f) => {
                         c.addEventListener(`keyup`, ()=>{
+                            f(c.value || c.checked)
+                        })
+                        c.addEventListener(`change`, ()=>{
                             f(c.value || c.checked)
                         })
                     }
@@ -141,10 +158,7 @@ class luaEngine {
                 let found = fetchCache.find((e)=>e.input == JSON.stringify(opts))
 
                 if(found){
-                    return {
-                        ...found.output,
-                        cached: true
-                    };
+                    return found.output;
                 }
 
                 return new Promise(async(res)=>{
@@ -153,24 +167,36 @@ class luaEngine {
 
                         //if(opts.body && !opts?.METHOD || opts?.METHOD != "GET") opts.body = undefined;
 
+                        if(opts.body) {
+                            if(isJson(opts.body)){
+                                opts.body = new window.http.Body("Json", typeof opts.body == "string" ? JSON.parse(opts.body) : opts.body)
+                            }else{
+                                opts.body = new window.http.Body("Text", opts.body.toString())
+                            }
+                        }
+
                         let out = await ffetch(opts.url, {
                             ...opts,
-                            responseType: opts.headers?.["Content-Type"]?.includes("son") ? http.ResponseType.JSON : http.ResponseType.Text
-                        })
+                            responseType: http.ResponseType.Text
+                        }), isJSON = isJson(out.data)
 
-                        let output = opts.headers?.["Content-Type"]?.includes("son") ? {
-                            data: out.data,
-                            tt: Array.isArray(out.data)
-                        } : {
+                        let output = isJSON ? 
+                            JSON.parse(out.data)
+                         : {
                             body: out.data,
                             content: out.data,
                             status: out.status,
+                            data: out.data,
                             json: ()=>{
                                 return JSON.parse(out.content)
                             },
                             text: ()=>{
                                 return out.data
                             }
+                        }
+
+                        if(isJSON && Array.isArray(output)){
+                            //output.unshift(0)
                         }
 
                         waitingToCache--;
@@ -191,6 +217,21 @@ class luaEngine {
     }
     run(text){
         this.lua.doString(`
+        function upvalues()
+        local variables = {}
+        local idx = 1
+        local func = debug.getinfo(0, "f").func
+        while true do
+          local ln, lv = debug.getupvalue(func, idx)
+          if ln ~= nil then
+            variables[ln] = lv
+          else
+            break
+          end
+          idx = 1 + idx
+        end
+        return variables
+      end
 function __is_array(table)
     if type(table) ~= 'table' then
         return false
@@ -209,25 +250,23 @@ function __is_array(table)
     -- if no elements it can be array and not at same time
     return true
 end
-      
-
+  
 function fetch(...)
-    print("HAHA")
     local got = __bussingafetch(...)
-    if(got.cached == nil) then
+
+    if(got.await) then
         got = __bussingafetch(...):await()
     end
-    
-    if(got.tt == true) then
+
+    if(got[1]) then
         local bards = {}
-        for i = 1, got.data.length do
-            table.insert(bards, got.data[i])
+        for i = 1, got.length do
+            table.insert(bards, got[i])
         end
         return bards
     end
-    if(got.status == nil) then
-        return got.data
-    end
+
+    print(got)
 
     return got
 end

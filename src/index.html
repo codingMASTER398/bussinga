@@ -90,6 +90,42 @@
               "font": "Noto Sans",
               "link": "#57A6A1",
               "searchBar": "#344C64"
+          },
+          "hacker": {
+              "titlebar": "#006769",
+              "tab": "#006769",
+              "highlight": "#40A578",
+              "button": "#40A578",
+              "background": "#006769",
+              "text1": "white",
+              "text2": "black",
+              "font": "monospace",
+              "link": "#E6FF94",
+              "searchBar": "#40A578"
+          },
+          "chill": {
+              "titlebar": "#DEFCF9",
+              "tab": "#CADEFC",
+              "highlight": "#CCA8E9",
+              "button": "#C3BEF0",
+              "background": "#DEFCF9",
+              "text1": "black",
+              "text2": "black",
+              "font": "Noto Sans",
+              "link": "#CCA8E9",
+              "searchBar": "#CCA8E9"
+          },
+          "volcano": {
+              "titlebar": "#311D3F",
+              "tab": "#522546",
+              "highlight": "#E23E57",
+              "button": "#88304E",
+              "background": "#311D3F",
+              "text1": "white",
+              "text2": "black",
+              "font": "Noto Sans",
+              "link": "#E23E57",
+              "searchBar": "#E23E57"
           }
       }
     </script>
@@ -113,6 +149,9 @@
       </div>
 
       <div class="rightActions" data-tauri-drag-region="">
+        <div class="titlebar-button" id="settings">
+          <i class='bx bxs-cog' ></i>
+        </div>
         <div class="titlebar-button" id="titlebar-minimize">
           <i class="bx bx-minus"></i>
         </div>
@@ -126,7 +165,7 @@
     </div>
 
     <div id="searchBar">
-      <input type="text" id="search" value="buss://">
+      <button id="refreshPage"><i class='bx bx-refresh'></i></button><input type="text" id="search" value="buss://">
     </div>
 
     <div id="contents">
