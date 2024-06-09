@@ -2,8 +2,8 @@ let THEME;
 
 window.dnsCache = {}
 
-if(!localStorage.getItem(`dns`)) localStorage.setItem(`dns`, `https://api.buss.lol/domain`);
-if(!localStorage.getItem(`newTabPage`)) localStorage.setItem(`newTabPage`, `buss://dingle.it`);
+if(!localStorage.getItem(`dns`)) localStorage.setItem(`dns`, `https://webxdns.votemanager.xyz/resolve`);
+if(!localStorage.getItem(`newTabPage`)) localStorage.setItem(`newTabPage`, `buss://search.frontdoor`);
 
 // Init window whatever
 const appWindow = __TAURI__.window.appWindow,
@@ -364,15 +364,15 @@ class site {
 
 window.site = site;
 
-let dnsProviders = {
+ let dnsProviders = {
   "bussinga": {
     lookup: (url, tld)=>{
-      console.log(url, tld)
+     console.log(url, tld)
       return new Promise((res,rej)=>{
         if(tld != "bang" || !["settings"].includes(url)) rej();
         res({
-          ip: `https://bussingah.pages.dev/${url}.html`,
-          //ip: `http://127.0.0.1:1430/internalPages/${url}.html`
+         //ip: `https://bussingah.pages.dev/${url}.html`,
+          ip: `https://raw.githubusercontent.com/webx-plus/internalPages/main/${url}.html`
         })
       })
     }
